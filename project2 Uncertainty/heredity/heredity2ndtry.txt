@@ -1,0 +1,26 @@
+prob = 1
+for person in people:
+    gene_count = get_genecount(person, one_gene, two_genes)
+    has_trait = person in have_trait
+    mother = people[person]["mother"]
+    father = people[person]["father"]
+    if mother == None and father == None:
+        prob += PROBS["gene"][gene_count]
+    else:
+        inherited_prob = {mother: 0, father: 0}
+        for parent in inherited_prob:
+            if parent in two_genes:
+                in_prob = 1 - PROBS['mutation']
+            elif parent in one_gene:
+                in_prob = .5
+            else:
+                in_prob = PROBS["mutation"]
+            inherited_prob[parent] = in_prob
+        if gene_count == 2:
+            prob *= inherited_prob[mother] * inherited_prob[father]
+        if gene_count == 1:
+            prob *= (inherited_prob[mother] * (1 - inherited_prob[father])) + inherited_prob[father] * (1 - inherited_prob[mother])
+        else:
+            prob *= ((1 - inherited_prob[father]) * (1 - inherited_prob[mother]))
+    prob *= PROBS["trait"][gene_count][has_trait]
+return prob
